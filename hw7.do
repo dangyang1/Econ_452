@@ -11,6 +11,7 @@ reg lwage educ exper
 estat ovtest
 gen exper2 = exper^2
 reg lwage educ exper*
+
 estat ovtest
 test exper=exper2=0
 gen educxexper = educ*exper
