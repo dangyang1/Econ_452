@@ -15,16 +15,18 @@ reg lwage educ exper*
 estat ovtest
 test exper=exper2=0
 gen educxexper = educ*exper
-reg lwage educ exper educxexper
+reg lwage educ exper educxexper1
 estat ovtest
 gen educxexper2 = educ*exper2
 reg lwage educ exper exper2 educxexper*
 estat ovtest
+sum exper
 reg lwage educ exper exper2 IQ
 estat ovtest
-gen iqxeduc = iq*educ
+gen iqxeduc = IQ*educ
 reg lwage educ exper* IQ iqxeduc
 estat ovtest
+test IQ=iqxeduc=0
 
 *******problem 2 *************
 clear
@@ -32,10 +34,9 @@ cd "/Users/dangyang/Downloads/Econ_452"
 use "BWGHT.dta", clear
 des
 
-gen lbwght = log(bwght)
-gen lfaminc = log(faminc)
 reg lbwght cigs lfaminc parity male white
-reg lwage cigs lfaminc parity male white motheduc fatheduc
+sum lbwght
+reg lbwght cigs lfaminc parity male white motheduc fatheduc
 test motheduc fatheduc
 
 ******* problem 3 *************
@@ -46,7 +47,13 @@ use "GPA2.dta", clear
 
 des
 
-//README: add here
+gen hsize2 = hsize^2
+gen interact1 = female*black
+reg sat hsize hsizesq female black interact1
+test hsize hsizesq
+
+ttest sat, by(black)
+test interact1 black
 
 ******* PART IIA : Time Series *************
 clear
