@@ -52,14 +52,46 @@ ivreg treadssk (regular regularaide = regularrand aiderand)
 *******Problem 2*************
 clear
 
+//NB: using CARD2 not CARD since CARD2 contains additional variables
 cd "/Users/dangyang/Downloads/Econ_452"
-use "CARD.dta", clear
+use "CARD2.dta", clear
 
 //using nearc4 IV conditions
 reg educ nearc4
-reg nearc4 IQ
-reg IQ nearc4 smsa66
+reg IQ nearc4
+reg IQ nearc4 smsa66 reg66*
+reg educ nearc2
+reg IQ nearc2
 
+ivreg lwage (educ=nearc2)
+
+gen exper2 = exper^2
+ivreg lwage (educ=nearc2) exper*
+test educ=0.2
+
+//final regression
+reg educ nearc4 exper expersq black south smsa reg66* smsa66
+ivreg lwage (educ=nearc4) exper expersq black south smsa reg66* smsa66
+
+*******Problem 3*************
+clear
+
+cd "/Users/dangyang/Downloads/Econ_452"
+use "BWGHT.dta", clear
+
+reg lbwght cigs
+
+//standardized lbwght change
+egen bmean = mean(lbwght)
+egen bsd = sd(lbwght)
+gen lbwghtSD = (lbwght-bmean)/bsd
+reg lbwghtSD cigs
+
+//cig price IV
+reg cigs cigprice
+test cigprice
+
+ivreg lbwght (cigs=cigprice)
 
 
 
