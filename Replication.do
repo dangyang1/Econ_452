@@ -28,6 +28,10 @@ log using Replication_v2.log, replace
 use "ABChousehold.dta", clear
 
 ttest age if year==2009, by (abc)
+ttest hhhead if year==2009, by (abc)
+ttest assets if year==2009, by (abc)
+ttest cellphoneowner if year==2009, by (abc)
+ttest usecellphone if year==2009, by (abc)
 
 
 *For the teachers:
@@ -35,19 +39,40 @@ ttest age if year==2009, by (abc)
 use "ABCteacher.dta", clear
 
 ttest teacherage if year==2009, by (abc)
+ttest femaleteacher if year==2009, by (abc)
+ttest local if year==2009, by (abc)
+ttest levelno if year==2009, by (abc)
 
 *For testcores
 
 use "ABCtestscore.dta", clear
 
 ttest writezscore if year==2009, by (abc)
+ttest mathzscore if year==2009, by (abc)
 
 * II. DID RESULTS - TABLE 2
 
 use "ABCtestscore.dta", clear
 * OUTCOME: mathzscore 
+keep if round==1|round==2|round==4
+
+sum mathzscore
+sum writezscore
 
 reg mathzscore abc post abcpost, robust
+reg writezscore abc post abcpost, robust
+reg mathzscore abc post abcpost age female hausa zarma kanuri dosso, robust
+reg writezscore abc post abcpost age female hausa zarma kanuri dosso, robust
+gen agesq = age^2
+reg mathzscore abc post abcpost age agesq female hausa zarma kanuri dosso, robust
+test age=agesq
+reg writezscore abc post abcpost age agesq female hausa zarma kanuri dosso, robust
+test age=agesq
+
+qui tab codevillage, gen(village_dum)
+reg mathzscore abc post abcpost age agesq female village_dum*, robust
+reg writezscore abc post abcpost age agesq female village_dum*, robust
+
 
 log close
 
